@@ -18,6 +18,7 @@ public class DeliveryController {
     @Autowired
     private DeliveryService service;
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Add delivery status", nickname = "addDelivery", notes = "", tags={ "Delivery", })
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Created"),
@@ -32,6 +33,7 @@ public class DeliveryController {
         return new ResponseEntity<Delivery>(HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Delete delivery by its unique code", nickname = "deleteDelivery", notes = "", tags={ "Delivery", })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -45,6 +47,7 @@ public class DeliveryController {
         return new ResponseEntity<Delivery>(HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Finds delivery by its unique code", nickname = "getDelivery", notes = "", tags={ "Delivery", })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -57,6 +60,7 @@ public class DeliveryController {
         return new ResponseEntity<Delivery>(service.getDelivery(code), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Update specific delivery", nickname = "modifyDelivery", notes = "", tags={ "Delivery", })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -71,6 +75,7 @@ public class DeliveryController {
         return new ResponseEntity<Delivery>(HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get all active deliveries", nickname = "getAllDeliveries", notes = "", tags={ "Delivery", })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),

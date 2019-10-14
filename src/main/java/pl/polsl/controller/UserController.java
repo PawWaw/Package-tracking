@@ -17,6 +17,7 @@ public class UserController {
     @Autowired
     private UserService service;
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Create user", nickname = "createUser", notes = "This can only be done by the logged in user.", tags = {"User",})
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Created"),
@@ -30,6 +31,7 @@ public class UserController {
         return new ResponseEntity<User>(HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Delete user", nickname = "deleteUser", notes = "This can only be done by the logged in user.", tags = {"User",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -43,6 +45,7 @@ public class UserController {
         return new ResponseEntity<User>(HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get user by user code", nickname = "getUser", notes = "", tags = {"User",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -55,6 +58,7 @@ public class UserController {
         return new ResponseEntity<User>(service.getUser(code), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Updated user", nickname = "updateUser", notes = "This can only be done by the logged in user.", tags = {"User",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
