@@ -5,12 +5,14 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.polsl.api.allegro.allegroAPI;
 import pl.polsl.model.Delivery;
 import pl.polsl.service.DeliveryService;
 
@@ -44,13 +46,14 @@ public class DeliveryController {
             @ApiResponse(code = 200, message = "Ok"),
             @ApiResponse(code = 405, message = "Invalid input"),
             @ApiResponse(code = 500, message = "Internal error") })
-    @RequestMapping(value = "/allegro",
+    @RequestMapping(value = "allegro",
             produces = { "application/json" },
             method = RequestMethod.GET)
-    public ResponseEntity giveToken() {
+    public ResponseEntity giveToken(@RequestParam("code") String code) throws Exception {
+        System.out.println(code);
+        new allegroAPI().getUserToken(code);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
     @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Delete delivery by its unique code", nickname = "deleteDelivery", notes = "", tags={ "Delivery", })
