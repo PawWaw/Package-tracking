@@ -1,16 +1,33 @@
 package pl.polsl.service;
 
-import javax.xml.namespace.QName;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.XML;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.NodeList;
+import pl.polsl.controller.PocztaPolskaRepository;
+
+import javax.xml.namespace.*;
 import javax.xml.soap.*;
+import java.io.IOException;
 
 public class PocztaPolskaService {
 
-    public SOAPMessage getPackage(String code) {
+    @Autowired
+    private PocztaPolskaRepository repository;
+
+    public SOAPMessage getPackage(String code) throws IOException, SOAPException, JSONException {
 
         String soapEndpointUrl = "https://tt.poczta-polska.pl/Sledzenie/services/Sledzenie?wsdl";
         String soapAction = "http://sledzenie.pocztapolska.pl/sprawdzPrzesylke";
+        SOAPMessage message = callPPWebService(soapEndpointUrl, soapAction, code);
 
-        return callPPWebService(soapEndpointUrl, soapAction, code);
+        String body = message.getSOAPBody().getTextContent();
+        JSONObject data = new JSONObject();
+        data = XML.toJSONObject(body);
+
+        return message;
     }
 
     private void createSoapEnvelope(SOAPMessage soapMessage, String code) throws SOAPException {
@@ -88,7 +105,6 @@ public class PocztaPolskaService {
             // Print the SOAP Response
             System.out.println("Response SOAP Message:");
             soapResponse.writeTo(System.out);
-            System.out.println();
 
             soapConnection.close();
         } catch (Exception e) {
@@ -110,9 +126,9 @@ public class PocztaPolskaService {
         soapMessage.saveChanges();
 
         /* Print the request message, just for debugging purposes */
-        System.out.println("Request SOAP Message:");
-        soapMessage.writeTo(System.out);
-        System.out.println("\n");
+//        System.out.println("Request SOAP Message:");
+//        soapMessage.writeTo(System.out);
+//        System.out.println("\n");
 
         return soapMessage;
     }

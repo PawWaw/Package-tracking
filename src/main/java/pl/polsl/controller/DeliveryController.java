@@ -1,28 +1,23 @@
 package pl.polsl.controller;
 
 import io.swagger.annotations.*;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.json.JSONException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.polsl.api.allegro.allegroAPI;
+import pl.polsl.service.allegroService;
 import pl.polsl.model.Delivery;
 import pl.polsl.service.DeliveryService;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
 @Api(value = "Delivery", description = "REST API for deliveries", tags = { "Delivery" })
 public class DeliveryController {
+
+    private boolean bool = false;
+    private allegroService allegro = new allegroService();
 
     @Autowired
     private DeliveryService service;
@@ -42,17 +37,57 @@ public class DeliveryController {
         return new ResponseEntity<Delivery>(HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Ok"),
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 405, message = "Invalid input"),
+            @ApiResponse(code = 500, message = "Internal error") })
+    @RequestMapping(value = "/allegro/me",
+            produces = { "application/json" },
+            method = RequestMethod.GET)
+    public ResponseEntity giveToken() throws Exception {
+        if(bool)
+            return new ResponseEntity<>(allegro.getMe(), HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 405, message = "Invalid input"),
             @ApiResponse(code = 500, message = "Internal error") })
     @RequestMapping(value = "allegro",
             produces = { "application/json" },
             method = RequestMethod.GET)
-    public ResponseEntity giveToken(@RequestParam("code") String code) throws Exception {
-        System.out.println(code);
-        new allegroAPI().getUserToken(code);
+    public ResponseEntity getMe(@RequestParam("code") String code) throws Exception {
+        bool = allegro.getUserToken(code);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 405, message = "Invalid input"),
+            @ApiResponse(code = 500, message = "Internal error") })
+    @RequestMapping(value = "allegro/checkToken",
+            produces = { "application/json" },
+            method = RequestMethod.GET)
+    public ResponseEntity<Boolean> checkToken() {
+        return bool ? new ResponseEntity<Boolean>(true, HttpStatus.OK) : new ResponseEntity<Boolean>(false, HttpStatus.OK);
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 405, message = "Invalid input"),
+            @ApiResponse(code = 500, message = "Internal error") })
+    @RequestMapping(value = "allegro/erase",
+            produces = { "application/json" },
+            method = RequestMethod.GET)
+    public ResponseEntity<Boolean> eraseToken() {
+        bool = false;
+        return new ResponseEntity<Boolean>(false, HttpStatus.OK);
     }
 
     @CrossOrigin(origins = "http://localhost:4200")

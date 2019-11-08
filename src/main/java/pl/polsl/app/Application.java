@@ -4,7 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import pl.polsl.api.allegro.allegroAPI;
 import pl.polsl.controller.DeliveryRepository;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 

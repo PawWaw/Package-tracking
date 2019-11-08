@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import pl.polsl.controller.InPostRepository;
 import pl.polsl.model.InPost;
 
+import java.util.List;
+
 @Service
 public class InPostService {
 
@@ -48,5 +50,9 @@ public class InPostService {
 
             return tracking;
         }
+    }
+
+    public List<InPost> getAll() {
+        return repository.findAll();
     }
 }

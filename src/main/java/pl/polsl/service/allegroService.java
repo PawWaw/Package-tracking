@@ -1,9 +1,7 @@
-package pl.polsl.api.allegro;
+package pl.polsl.service;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -11,28 +9,25 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class allegroAPI {
+public class allegroService {
 
     private final CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    String url = "https://allegro.pl.allegrosandbox.pl/auth/oauth/token?grant_type=client_credentials";
-    String clientID = "8dc210ae93144ac1adde3409c34ce54c";
-    String clientSecret = "fcAGMlgRh9SBhMBmBrMaMgSCfczM5uSBKLdpxpPIORqphz1t3A6CRhgldl7CM83D";
+    private String url = "https://allegro.pl.allegrosandbox.pl/auth/oauth/token?grant_type=client_credentials";
+    private String clientID = "8dc210ae93144ac1adde3409c34ce54c";
+    private String clientSecret = "fcAGMlgRh9SBhMBmBrMaMgSCfczM5uSBKLdpxpPIORqphz1t3A6CRhgldl7CM83D";
+    private String token = null;
 
-    public String getUserToken(String code) throws Exception {
+    public boolean getUserToken(String code) throws Exception {
 
         HttpPost post = new HttpPost("https://allegro.pl.allegrosandbox.pl/auth/oauth/token?grant_type=authorization_code&code=" + code + "&redirect_uri=http://localhost:8080/allegro");
 
         HttpHeaders header = new HttpHeaders();
-
-        String token = null;
 
         // add request headers
         String auth = clientID + ":" + clientSecret;
@@ -49,9 +44,10 @@ public class allegroAPI {
             JSONObject jsonObject = new JSONObject(result);
             System.out.println(jsonObject.getString("access_token"));
             token = jsonObject.getString("access_token");
-            getBuys(token);
+            if(token != null)
+                return true;
         }
-        return token;
+        return false;
     }
 
     public String getPublicToken() throws Exception {
@@ -102,12 +98,11 @@ public class allegroAPI {
             Header headers = entity.getContentType();
 
             String result = EntityUtils.toString(entity);
-            JSONObject jsonObject = new JSONObject(result);
-            return jsonObject;
+            return new JSONObject(result);
         }
     }
 
-    public Object getBuys(String token) throws Exception {
+    public String getMe() throws Exception {
 
         JSONObject jsonObject = null;
 
@@ -132,13 +127,13 @@ public class allegroAPI {
                 Header headers = entity.getContentType();
 
                 String result = EntityUtils.toString(entity);
+                System.out.println(result);
                 jsonObject = new JSONObject(result);
-                return jsonObject;
+                return result;
             }
-
         }
 
-        return jsonObject;
+        return null;
     }
 
 
