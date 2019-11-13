@@ -18,6 +18,10 @@ public class PocztaPolskaService {
     @Autowired
     private PocztaPolskaRepository repository;
 
+    public List<PocztaPolska> getAll() {
+        return repository.findAll();
+    }
+
     public PocztaPolska getPackage(String code) throws SOAPException, JSONException {
 
         String soapEndpointUrl = "https://tt.poczta-polska.pl/Sledzenie/services/Sledzenie?wsdl";

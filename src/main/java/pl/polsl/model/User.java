@@ -8,39 +8,49 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
  * User
  */
-@Validated
 @Document(collection = "User")
 public class User {
 
     @Id
     @JsonProperty("id")
-    private String id = null;
+    private String id;
 
+    @NotNull
+    @NotEmpty
     @JsonProperty("code")
-    private String code = null;
+    private String code;
 
+    @NotNull
+    @NotEmpty
     @JsonProperty("username")
     private String username = null;
 
+    @NotNull
+    @NotEmpty
     @JsonProperty("firstName")
     private String firstName = null;
 
+    @NotNull
+    @NotEmpty
     @JsonProperty("lastName")
     private String lastName = null;
 
+    @NotNull
+    @NotEmpty
     @JsonProperty("email")
     private String email = null;
 
+    @NotNull
+    @NotEmpty
     @JsonProperty("password")
     private String password = null;
-
-    @JsonProperty("phone")
-    private Long phone = null;
 
     public User() {
     }
@@ -75,6 +85,14 @@ public class User {
         }
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     @JsonProperty("userStatus")
     private UserStatusEnum userStatus = null;
 
@@ -104,15 +122,6 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    @ApiModelProperty(value = "")
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public User firstName(String firstName) {
@@ -171,20 +180,6 @@ public class User {
         this.password = password;
     }
 
-    public User phone(Long phone) {
-        this.phone = phone;
-        return this;
-    }
-
-    @ApiModelProperty(value = "")
-    public Long getPhone() {
-        return phone;
-    }
-
-    public void setPhone(Long phone) {
-        this.phone = phone;
-    }
-
     public User userStatus(UserStatusEnum userStatus) {
         this.userStatus = userStatus;
         return this;
@@ -211,18 +206,16 @@ public class User {
         User user = (User) o;
         return Objects.equals(this.id, user.id) &&
                 Objects.equals(this.username, user.username) &&
-                Objects.equals(this.code, user.code) &&
                 Objects.equals(this.firstName, user.firstName) &&
                 Objects.equals(this.lastName, user.lastName) &&
                 Objects.equals(this.email, user.email) &&
                 Objects.equals(this.password, user.password) &&
-                Objects.equals(this.phone, user.phone) &&
                 Objects.equals(this.userStatus, user.userStatus);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, firstName, lastName, email, password, phone, userStatus);
+        return Objects.hash(id, username, firstName, lastName, email, password, userStatus);
     }
 
     @Override
@@ -231,13 +224,11 @@ public class User {
         sb.append("class User {\n");
 
         sb.append("    id: ").append(toIndentedString(id)).append("\n");
-        sb.append("    code: ").append(toIndentedString(code)).append("\n");
         sb.append("    username: ").append(toIndentedString(username)).append("\n");
         sb.append("    firstName: ").append(toIndentedString(firstName)).append("\n");
         sb.append("    lastName: ").append(toIndentedString(lastName)).append("\n");
         sb.append("    email: ").append(toIndentedString(email)).append("\n");
         sb.append("    password: ").append(toIndentedString(password)).append("\n");
-        sb.append("    phone: ").append(toIndentedString(phone)).append("\n");
         sb.append("    userStatus: ").append(toIndentedString(userStatus)).append("\n");
         sb.append("}");
         return sb.toString();

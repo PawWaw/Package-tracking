@@ -5,4 +5,5 @@ import pl.polsl.model.User;
 
 public interface UserRepository extends MongoRepository<User, String> {
     public User findByCode(String code);
+    public User findByUsername(String username);
 }

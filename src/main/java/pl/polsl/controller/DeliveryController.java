@@ -13,7 +13,6 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@Api(value = "Delivery", description = "REST API for deliveries", tags = { "Delivery" })
 public class DeliveryController {
 
     private boolean bool = false;
@@ -38,6 +37,7 @@ public class DeliveryController {
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
+    @ApiOperation(value = "Get token", nickname = "getToken", notes = "", tags={ "Allegro", })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 405, message = "Invalid input"),
@@ -53,6 +53,7 @@ public class DeliveryController {
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
+    @ApiOperation(value = "Get account data", nickname = "getMe", notes = "", tags={ "Allegro", })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 405, message = "Invalid input"),
@@ -66,6 +67,7 @@ public class DeliveryController {
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
+    @ApiOperation(value = "Check if token is set", nickname = "checkToken", notes = "", tags={ "Allegro", })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 405, message = "Invalid input"),
@@ -78,6 +80,7 @@ public class DeliveryController {
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
+    @ApiOperation(value = "Erase token", nickname = "eraseToken", notes = "", tags={ "Allegro", })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
             @ApiResponse(code = 405, message = "Invalid input"),

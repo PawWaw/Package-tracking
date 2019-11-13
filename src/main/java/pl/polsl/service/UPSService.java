@@ -13,12 +13,17 @@ import pl.polsl.controller.UPSRepository;
 import pl.polsl.model.UPS;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class UPSService {
 
     @Autowired
     private UPSRepository repository;
+
+    public List<UPS> getAll() {
+        return repository.findAll();
+    }
 
     public UPS getPackage(String code) throws IOException {
 

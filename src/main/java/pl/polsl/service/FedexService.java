@@ -1,19 +1,35 @@
 package pl.polsl.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import pl.polsl.model.Fedex;
 
 import javax.xml.soap.SOAPMessage;
+import java.util.List;
 
 @Service
 public class FedexService {
 
-    public String getPackage(String code) {
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
+    public List<Fedex> getAll() {
+        return null;
+    }
+
+    public Fedex getPackage(String code) {
+
+        Fedex delivery = getJSON(code);
+
+        return delivery;
+    }
+
+    private Fedex getJSON(String code) {
         String message = callFedexService(code);
 
-        return message;
+
+        return null;
     }
 
     private String callFedexService(String code) {
@@ -65,6 +81,7 @@ public class FedexService {
                             "\t\t</v16:TrackRequest>\n" +
                             "\t</soapenv:Body>\n" +
                             "</SOAP-ENV:Envelope>";
+
             ResponseEntity<String> response = restTemplate.postForEntity("https://wsbeta.fedex.com:443/web-services", xml, String.class);
 
             return response.getBody();

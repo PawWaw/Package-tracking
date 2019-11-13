@@ -18,17 +18,39 @@ public class UserController {
     private UserService service;
 
     @CrossOrigin(origins = "http://localhost:4200")
+    @ApiOperation(value = "Login user", nickname = "loginUser", notes = "This can only be done by the logged in user.", tags = {"User",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Created"),
+            @ApiResponse(code = 405, message = "Invalid input"),
+            @ApiResponse(code = 500, message = "Internal error")})
+    @RequestMapping(value = "/user/login",
+            produces = {"application/json"},
+            method = RequestMethod.POST)
+    public ResponseEntity<String> loginUser(@ApiParam(value = "Created user object", required = true) @Valid @RequestBody User body) {
+        if(service.loginUser(body))
+            return new ResponseEntity<String>(service.generateToken(), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Create user", nickname = "createUser", notes = "This can only be done by the logged in user.", tags = {"User",})
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Created"),
             @ApiResponse(code = 405, message = "Invalid input"),
             @ApiResponse(code = 500, message = "Internal error")})
-    @RequestMapping(value = "/user",
+    @RequestMapping(value = "/user/registration",
             produces = {"application/json"},
             method = RequestMethod.POST)
     public ResponseEntity<User> createUser(@ApiParam(value = "Created user object", required = true) @Valid @RequestBody User body) {
-        service.createUser(body);
-        return new ResponseEntity<User>(HttpStatus.OK);
+        if(!service.checkIfExists(body.getUsername()))
+        {
+            if(!service.createUser(body))
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            else
+                return new ResponseEntity<>(HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @CrossOrigin(origins = "http://localhost:4200")
