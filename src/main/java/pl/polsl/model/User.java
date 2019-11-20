@@ -1,56 +1,48 @@
 package pl.polsl.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 import java.util.Objects;
 
 /**
  * User
  */
 @Document(collection = "User")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @JsonProperty("id")
-    private String id;
+    private String id = null;
 
-    @NotNull
-    @NotEmpty
     @JsonProperty("code")
-    private String code;
+    private String code = null;
 
-    @NotNull
-    @NotEmpty
     @JsonProperty("username")
     private String username = null;
 
-    @NotNull
-    @NotEmpty
-    @JsonProperty("firstName")
-    private String firstName = null;
+    @JsonProperty("password")
+    private String password = null;
 
-    @NotNull
-    @NotEmpty
-    @JsonProperty("lastName")
-    private String lastName = null;
-
-    @NotNull
-    @NotEmpty
     @JsonProperty("email")
     private String email = null;
 
-    @NotNull
-    @NotEmpty
-    @JsonProperty("password")
-    private String password = null;
+    @JsonProperty("firstName")
+    private String firstName = null;
+
+    @JsonProperty("lastName")
+    private String lastName = null;
 
     public User() {
     }
@@ -171,6 +163,11 @@ public class User {
         return this;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
     @ApiModelProperty(value = "")
     public String getPassword() {
         return password;
@@ -239,6 +236,31 @@ public class User {
             return "null";
         }
         return o.toString().replace("\n", "\n    ");
+    }
+
+
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
 

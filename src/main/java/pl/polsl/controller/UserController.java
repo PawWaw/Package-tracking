@@ -17,19 +17,15 @@ public class UserController {
     @Autowired
     private UserService service;
 
-    @CrossOrigin(origins = "http://localhost:4200")
-    @ApiOperation(value = "Login user", nickname = "loginUser", notes = "This can only be done by the logged in user.", tags = {"User",})
+    @ApiOperation(value = "Creates a new user or patches existing", nickname = "saveUser", notes = "New user", tags={  })
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Created"),
-            @ApiResponse(code = 405, message = "Invalid input"),
-            @ApiResponse(code = 500, message = "Internal error")})
-    @RequestMapping(value = "/user/login",
-            produces = {"application/json"},
+            @ApiResponse(code = 204, message = "User succesfully created."),
+            @ApiResponse(code = 400, message = "User couldn't have been created."),
+            @ApiResponse(code = 500, message = "An unexpected error occured.", response = Object.class) })
+    @RequestMapping(value = "/users",
             method = RequestMethod.POST)
-    public ResponseEntity<String> loginUser(@ApiParam(value = "Created user object", required = true) @Valid @RequestBody User body) {
-        if(service.loginUser(body))
-            return new ResponseEntity<String>(service.generateToken(), HttpStatus.OK);
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Void> saveUser(@ApiParam(value = "User to create"  )  @Valid @RequestBody User user) {
+        return service.saveUser(user);
     }
 
     @CrossOrigin(origins = "http://localhost:4200")

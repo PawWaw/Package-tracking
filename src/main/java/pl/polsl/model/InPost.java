@@ -43,6 +43,9 @@ public class InPost {
     @JsonProperty("custom_attributes")
     private Object custom_attributes = null;
 
+    @JsonProperty("userCode")
+    private String userCode = null;
+
     public String getId() {
         return id;
     }
@@ -131,4 +134,11 @@ public class InPost {
         this.custom_attributes = custom_attributes;
     }
 
+    public String getUserCode() {
+        return userCode;
+    }
+
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
+    }
 }

@@ -1,6 +1,11 @@
 package pl.polsl.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,7 +16,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService  implements UserDetailsService {
 
     @Autowired
     private UserRepository repository;
@@ -22,6 +27,16 @@ public class UserService {
 
     public String generateToken() {
         return null;
+    }
+
+    public ResponseEntity<Void> saveUser(User user) {
+        if(user.getPassword().equals(user.getUsername()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        user.setPassword(getEncoder().encode(user.getPassword()));
+        user.setId(null);
+        user.setCode(user.getUsername());
+        repository.save(user);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     public boolean loginUser(User user) {
@@ -59,5 +74,15 @@ public class UserService {
 
     public void modifyUser(User user) {
         repository.save(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = repository.findByUsername(username);
+        if (user != null) {
+            return user;
+        } else {
+            throw new UsernameNotFoundException("User not found");
+        }
     }
 }

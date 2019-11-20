@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import pl.polsl.model.Fedex;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.xml.soap.SOAPMessage;
 import java.util.List;

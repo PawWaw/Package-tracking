@@ -14,7 +14,7 @@ import org.springframework.http.HttpHeaders;
 
 import java.nio.charset.StandardCharsets;
 
-public class allegroService {
+public class AllegroService {
 
     private final CloseableHttpClient httpClient = HttpClients.createDefault();
 

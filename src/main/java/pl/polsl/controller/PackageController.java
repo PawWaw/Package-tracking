@@ -17,23 +17,26 @@ import java.util.List;
 @RequestMapping("/package")
 public class PackageController {
 
-    @Autowired
-    private InPostService inPost;
+    private final InPostService inPost;
 
-    @Autowired
-    private GLSService gls;
+    private final GLSService gls;
 
-    @Autowired
-    private DHLService dhl;
+    private final DHLService dhl;
 
-    @Autowired
-    private FedexService fedex;
+    private final FedexService fedex;
 
-    @Autowired
-    private UPSService ups;
+    private final UPSService ups;
 
-    @Autowired
-    private PocztaPolskaService pocztaPolska;
+    private final PocztaPolskaService pocztaPolska;
+
+    public PackageController(InPostService inPost, GLSService gls, DHLService dhl, FedexService fedex, UPSService ups, PocztaPolskaService pocztaPolska) {
+        this.inPost = inPost;
+        this.gls = gls;
+        this.dhl = dhl;
+        this.fedex = fedex;
+        this.ups = ups;
+        this.pocztaPolska = pocztaPolska;
+    }
 
     @PreAuthorize("#oauth2.hasScope('read')")
     @CrossOrigin(origins = "http://localhost:4200")

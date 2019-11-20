@@ -40,6 +40,9 @@ public class PocztaPolska {
     @JsonProperty("events")
     private List<PocztaPolskaDetails> events = null;
 
+    @JsonProperty("userCode")
+    private String userCode = null;
+
     public String getId() {
         return id;
     }
@@ -118,5 +121,13 @@ public class PocztaPolska {
 
     public void setEvents(List<PocztaPolskaDetails> events) {
         this.events = events;
+    }
+
+    public String getUserCode() {
+        return userCode;
+    }
+
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
     }
 }

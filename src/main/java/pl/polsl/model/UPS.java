@@ -14,8 +14,14 @@ public class UPS {
     @JsonProperty("code")
     private String code = null;
 
+    @JsonProperty("status")
+    private String status = null;
+
     @JsonProperty("TrackResponse")
     private Object trackResponse = null;
+
+    @JsonProperty("userCode")
+    private String userCode = null;
 
     public String getId() {
         return id;
@@ -39,5 +45,21 @@ public class UPS {
 
     public void setTrackResponse(Object trackResponse) {
         this.trackResponse = trackResponse;
+    }
+
+    public String getUserCode() {
+        return userCode;
+    }
+
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

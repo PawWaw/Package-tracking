@@ -39,6 +39,7 @@ public class UPSService {
 
         ObjectMapper objectMapper = new ObjectMapper();
         UPS tracking = objectMapper.readValue(entity.getContent(), UPS.class);
+        tracking.setStatus(tracking.getTrackResponse().toString().substring(tracking.getTrackResponse().toString().indexOf("Status={Type=") + 13, tracking.getTrackResponse().toString().indexOf("Status={Type=") + 14));
         tracking.setCode(code);
         repository.save(tracking);
         return tracking;
