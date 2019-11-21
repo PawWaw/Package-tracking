@@ -21,11 +21,21 @@ public class UPSService {
     @Autowired
     private UPSRepository repository;
 
+    private void addPackage(UPS tracking) {
+        UPS temp = repository.findByCode(tracking.getCode());
+
+        if(temp == null)
+            repository.save(tracking);
+        else if (!temp.getStatus().equals("D"))
+            repository.save(tracking);
+    }
+
+
     public List<UPS> getAll() {
         return repository.findAll();
     }
 
-    public UPS getPackage(String code) throws IOException {
+    public UPS getPackage(String code, String userCode) throws IOException {
 
         HttpClient httpclient = HttpClientBuilder.create().build();
         HttpPost httppost = new HttpPost("https://wwwcie.ups.com/rest/Track");
@@ -41,7 +51,8 @@ public class UPSService {
         UPS tracking = objectMapper.readValue(entity.getContent(), UPS.class);
         tracking.setStatus(tracking.getTrackResponse().toString().substring(tracking.getTrackResponse().toString().indexOf("Status={Type=") + 13, tracking.getTrackResponse().toString().indexOf("Status={Type=") + 14));
         tracking.setCode(code);
-        repository.save(tracking);
+        tracking.setUserCode(userCode);
+        addPackage(tracking);
         return tracking;
     }
 }

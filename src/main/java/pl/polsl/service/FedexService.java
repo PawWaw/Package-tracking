@@ -1,41 +1,62 @@
 package pl.polsl.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.XML;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import pl.polsl.controller.FedexRepository;
 import pl.polsl.model.Fedex;
-import springfox.documentation.spring.web.json.Json;
 
-import javax.xml.soap.SOAPMessage;
 import java.util.List;
 
 @Service
 public class FedexService {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private FedexRepository repository;
 
     public List<Fedex> getAll() {
-        return null;
+        return repository.findAll();
     }
 
-    public Fedex getPackage(String code) {
+    public Fedex getPackage(String code, String userCode) {
 
-        Fedex delivery = getJSON(code);
-
-        return delivery;
+        if(repository.findByCode(code) != null)
+            return repository.findByCode(code);
+        else
+        {
+            Fedex tracking = getJSON(code);
+            tracking.setCode(code);
+            tracking.setUserCode(userCode);
+            String message = callFedexService(code);
+            tracking.setSize(message.length());
+            repository.save(tracking);
+            return tracking;
+        }
     }
 
     private Fedex getJSON(String code) {
         String message = callFedexService(code);
+        Fedex tracking = new Fedex();
+        int temp = message.indexOf("<HighestSeverity>");
+        int temp2 = message.indexOf("</TrackReply>");
+        message = message.substring(temp, temp2);
 
+        try {
+            JSONObject xmlJSONObj = XML.toJSONObject(message);
+            tracking.setCompletedTrackDetails(xmlJSONObj);
+        } catch (JSONException je) {
+            System.out.println(je.toString());
+        }
 
-        return null;
+        return tracking;
     }
 
     private String callFedexService(String code) {
-
-        SOAPMessage soapResponse = null;
 
         try {
             RestTemplate restTemplate = new RestTemplate();

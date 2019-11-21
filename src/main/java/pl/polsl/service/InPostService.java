@@ -28,7 +28,7 @@ public class InPostService {
             repository.save(tracking);
     }
 
-    public InPost getPackage(String code) throws Exception {
+    public InPost getPackage(String code, String userCode) throws Exception {
 
         CloseableHttpClient httpClient =  HttpClients.createDefault();
         String getCategoriesUrl = "https://api-shipx-pl.easypack24.net/v1/tracking/" + code;
@@ -45,6 +45,7 @@ public class InPostService {
             ObjectMapper objectMapper = new ObjectMapper();
             InPost tracking = objectMapper.readValue(entity.getContent(), InPost.class);
             tracking.setCode(tracking.getTracking_number());
+            tracking.setUserCode(userCode);
             Header headers = entity.getContentType();
             addPackage(tracking);
 

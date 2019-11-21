@@ -9,10 +9,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import pl.polsl.controller.*;
 import pl.polsl.model.*;
-import pl.polsl.service.FedexService;
-import pl.polsl.service.InPostService;
-import pl.polsl.service.PocztaPolskaService;
-import pl.polsl.service.UPSService;
+import pl.polsl.model.Fedex;
+import pl.polsl.service.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +18,12 @@ import java.util.List;
 @Configuration
 @EnableScheduling
 public class SchedulerConfig {
+
+    @Autowired
+    DHLService dhlService;
+
+    @Autowired
+    DHLRepository dhlRepository;
 
     @Autowired
     InPostRepository inpostRepository;
@@ -54,28 +58,44 @@ public class SchedulerConfig {
     @Autowired
     UserRepository userRepository;
 
-    @Scheduled(fixedDelay = 120000)
+    @Scheduled(fixedDelay = 1200000)
     public void scheduleFixedDelayTask() throws Exception {
-
-        String userCode = "temp1";
 
         List<User> users = userRepository.findAll();
         String id = null;
         List<InPost> inPostChanges = new ArrayList<>();
+        List<DHL> dhlChanges = new ArrayList<>();
         List<PocztaPolska> pocztaPolskaChanges = new ArrayList<>();
         List<UPS> upsListChanges = new ArrayList<>();
         List<Fedex> fedexListChanges = new ArrayList<>();
 
         for (User user : users) {
+            Query dhlQuery = new Query();
+            dhlQuery.addCriteria(Criteria.where("status").ne("DOR"));
+            List<DHL> dhlList = mongoops.find(dhlQuery, DHL.class);
+
+            for (DHL dhl : dhlList) {
+                if (dhl.getUserCode().equals(user.getUsername())) {
+                    id = dhl.getId();
+                    dhl.setId(null);
+                    DHL temp = dhlService.getPackage(dhl.getCode(), user.getUsername());
+                    if (!dhl.equals(temp)) {
+                        temp.setId(id);
+                        dhlChanges.add(temp);
+                        dhlRepository.save(temp);
+                    }
+                }
+            }
+
             Query inPostQuery = new Query();
             inPostQuery.addCriteria(Criteria.where("status").ne("delivered"));
             List<InPost> inPostList = mongoops.find(inPostQuery, InPost.class);
 
             for (InPost inPost : inPostList) {
-                if (inPost.getUserCode().equals(userCode)) {
+                if (inPost.getUserCode().equals(user.getUsername())) {
                     id = inPost.getId();
                     inPost.setId(null);
-                    InPost temp = inPostService.getPackage(inPost.getCode());
+                    InPost temp = inPostService.getPackage(inPost.getCode(), user.getUsername());
                     if (!inPost.equals(temp)) {
                         temp.setId(id);
                         inPostChanges.add(temp);
@@ -89,10 +109,10 @@ public class SchedulerConfig {
             List<PocztaPolska> pocztaPolskaList = mongoops.find(pocztaPolskaQuery, PocztaPolska.class);
 
             for (PocztaPolska pocztaPolska : pocztaPolskaList) {
-                if (pocztaPolska.getUserCode().equals(userCode)) {
+                if (pocztaPolska.getUserCode().equals(user.getUsername())) {
                     id = pocztaPolska.getId();
                     pocztaPolska.setId(null);
-                    PocztaPolska temp = pocztaPolskaService.getPackage(pocztaPolska.getCode());
+                    PocztaPolska temp = pocztaPolskaService.getPackage(pocztaPolska.getCode(), user.getUsername());
                     if (!pocztaPolska.equals(temp)) {
                         temp.setId(id);
                         pocztaPolskaChanges.add(temp);
@@ -106,10 +126,10 @@ public class SchedulerConfig {
             List<UPS> upsList = mongoops.find(upsQuery, UPS.class);
 
             for (UPS ups : upsList) {
-                if (ups.getUserCode().equals(userCode)) {
+                if (ups.getUserCode().equals(user.getUsername())) {
                     id = ups.getId();
                     ups.setId(null);
-                    UPS temp = upsService.getPackage(ups.getCode());
+                    UPS temp = upsService.getPackage(ups.getCode(), user.getUsername());
                     if (!ups.equals(temp)) {
                         temp.setId(id);
                         upsListChanges.add(temp);
@@ -118,16 +138,14 @@ public class SchedulerConfig {
                 }
             }
 
-            Query fedexQuery = new Query();
-            fedexQuery.addCriteria(Criteria.where("Description").ne("DELIVERED"));
-            List<Fedex> fedexList = mongoops.find(fedexQuery, Fedex.class);
+            List<Fedex> fedexList = fedexRepository.findAll();
 
             for (Fedex fedex : fedexList) {
-                if (fedex.getUserCode().equals(userCode)) {
+                if (fedex.getUserCode().equals(user.getUsername())) {
                     id = fedex.getId();
                     fedex.setId(null);
-                    Fedex temp = fedexService.getPackage(fedex.getCode());
-                    if (!fedex.equals(temp)) {
+                    Fedex temp = fedexService.getPackage(fedex.getCode(), user.getUsername());
+                    if (fedex.getSize() != temp.getSize()) {
                         temp.setId(id);
                         fedexListChanges.add(temp);
                         fedexRepository.save(temp);
@@ -135,10 +153,9 @@ public class SchedulerConfig {
                 }
             }
 
-            if (inPostChanges.size() != 0 || pocztaPolskaChanges.size() != 0 || upsListChanges.size() != 0 || fedexListChanges.size() != 0)
+            if (inPostChanges.size() != 0 || pocztaPolskaChanges.size() != 0 || upsListChanges.size() != 0 || fedexListChanges.size() != 0 || dhlChanges.size() != 0)
                 email.sendSimpleMessage(user.getEmail(), "<NoReply> Your packages changed their statuses!",
                         "Some of your packages changed their statuses. Please, login and check it out.");
         }
     }
-
 }

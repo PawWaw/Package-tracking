@@ -18,18 +18,27 @@ public class PocztaPolskaService {
     @Autowired
     private PocztaPolskaRepository repository;
 
+    private void addPackage(PocztaPolska tracking) {
+        PocztaPolska temp = repository.findByCode(tracking.getCode());
+        if(temp == null)
+            repository.save(tracking);
+        else if (!temp.getDeliveredFlag().equals("true"))
+            repository.save(tracking);
+    }
+
     public List<PocztaPolska> getAll() {
         return repository.findAll();
     }
 
-    public PocztaPolska getPackage(String code) throws SOAPException, JSONException {
+    public PocztaPolska getPackage(String code, String userCode) throws SOAPException, JSONException {
 
         String soapEndpointUrl = "https://tt.poczta-polska.pl/Sledzenie/services/Sledzenie?wsdl";
         String soapAction = "http://sledzenie.pocztapolska.pl/sprawdzPrzesylke";
         SOAPMessage message = callPPWebService(soapEndpointUrl, soapAction, code);
 
         PocztaPolska tracking = parseSOAPMessage(message);
-        repository.save(tracking);
+        tracking.setUserCode(userCode);
+        addPackage(tracking);
 
         return tracking;
     }
