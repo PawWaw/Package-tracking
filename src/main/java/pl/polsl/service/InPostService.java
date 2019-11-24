@@ -30,6 +30,11 @@ public class InPostService {
 
     public InPost getPackage(String code, String userCode) throws Exception {
 
+        final InPost byCode = repository.findByCode(code);
+        if(byCode != null)
+            if(byCode.getStatus().equals("delivered"))
+                return byCode;
+
         CloseableHttpClient httpClient =  HttpClients.createDefault();
         String getCategoriesUrl = "https://api-shipx-pl.easypack24.net/v1/tracking/" + code;
 

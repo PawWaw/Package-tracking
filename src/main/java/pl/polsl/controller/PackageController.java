@@ -77,7 +77,7 @@ public class PackageController {
     @RequestMapping(value = "/fedex/{code}",
             produces = {"application/json"},
             method = RequestMethod.GET)
-    public ResponseEntity<Fedex> getFedexPackage(@ApiParam(value = "", required = true) @PathVariable("code") String code, @RequestHeader("authorization") String token) {
+    public ResponseEntity<Fedex> getFedexPackage(@ApiParam(value = "", required = true) @PathVariable("code") String code, @RequestHeader("authorization") String token) throws Exception {
         return new ResponseEntity<>(fedex.getPackage(code, commons.getUserFromJWT(token)), HttpStatus.OK);
     }
 

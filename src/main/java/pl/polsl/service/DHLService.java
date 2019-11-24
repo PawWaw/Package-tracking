@@ -65,6 +65,11 @@ public class DHLService {
 
     public DHL getPackage(String code, String userCode) {
 
+        DHL byCode = repository.findByCode(code);
+        if(byCode != null)
+            if(byCode.getStatus().equals("DOR"))
+                return byCode;
+
         try {
             RestTemplate restTemplate = new RestTemplate();
             String xml =

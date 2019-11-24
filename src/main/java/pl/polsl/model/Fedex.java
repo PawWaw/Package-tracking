@@ -20,7 +20,7 @@ public class Fedex {
     @JsonProperty("size")
     private Integer size = null;
 
-    @JsonProperty("CompletedTrackDetails")
+    @JsonProperty("completedTrackDetails")
     private Object CompletedTrackDetails = null;
 
     public String getId() {
@@ -47,19 +47,19 @@ public class Fedex {
         this.userCode = userCode;
     }
 
-    public Object getCompletedTrackDetails() {
-        return CompletedTrackDetails;
-    }
-
-    public void setCompletedTrackDetails(Object completedTrackDetails) {
-        CompletedTrackDetails = completedTrackDetails;
-    }
-
     public Integer getSize() {
         return size;
     }
 
     public void setSize(Integer size) {
         this.size = size;
+    }
+
+    public Object getCompletedTrackDetails() {
+        return CompletedTrackDetails;
+    }
+
+    public void setCompletedTrackDetails(Object completedTrackDetails) {
+        CompletedTrackDetails = completedTrackDetails;
     }
 }

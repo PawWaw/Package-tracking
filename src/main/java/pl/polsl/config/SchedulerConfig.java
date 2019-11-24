@@ -154,8 +154,17 @@ public class SchedulerConfig {
             }
 
             if (inPostChanges.size() != 0 || pocztaPolskaChanges.size() != 0 || upsListChanges.size() != 0 || fedexListChanges.size() != 0 || dhlChanges.size() != 0)
+            {
+                String data = "";
+                for (InPost inPostChange : inPostChanges)
+                    data = data + inPostChange.getCode() + "\n";
+
+
+
+
                 email.sendSimpleMessage(user.getEmail(), "<NoReply> Your packages changed their statuses!",
                         "Some of your packages changed their statuses. Please, login and check it out.");
+            }
         }
     }
 }

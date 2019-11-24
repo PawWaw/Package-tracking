@@ -23,27 +23,26 @@ public class FedexService {
         return repository.findAll();
     }
 
-    public Fedex getPackage(String code, String userCode) {
+    public Fedex getPackage(String code, String userCode) throws Exception{
 
-        if(repository.findByCode(code) != null)
-            return repository.findByCode(code);
-        else
-        {
-            Fedex tracking = getJSON(code);
-            tracking.setCode(code);
-            tracking.setUserCode(userCode);
-            String message = callFedexService(code);
-            tracking.setSize(message.length());
-            repository.save(tracking);
-            return tracking;
-        }
+        Fedex byCode = repository.findByCode(code);
+        if(byCode != null)
+            return byCode;
+
+        Fedex tracking = new Fedex();// = getJSON(code);
+        tracking.setCode(code);
+        tracking.setUserCode(userCode);
+        String message = callFedexService(code);
+        tracking.setSize(message.length());
+        repository.save(tracking);
+        return tracking;
     }
 
     private Fedex getJSON(String code) {
         String message = callFedexService(code);
         Fedex tracking = new Fedex();
-        int temp = message.indexOf("<HighestSeverity>");
-        int temp2 = message.indexOf("</TrackReply>");
+        int temp = message.indexOf("<CompletedTrackDetails>");
+        int temp2 = message.indexOf("</CompletedTrackDetails>") + 24;
         message = message.substring(temp, temp2);
 
         try {

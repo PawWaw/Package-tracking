@@ -22,20 +22,24 @@ public class UPSService {
     private UPSRepository repository;
 
     private void addPackage(UPS tracking) {
-        UPS temp = repository.findByCode(tracking.getCode());
 
+        UPS temp = repository.findByCode(tracking.getCode());
         if(temp == null)
             repository.save(tracking);
         else if (!temp.getStatus().equals("D"))
             repository.save(tracking);
     }
 
-
     public List<UPS> getAll() {
         return repository.findAll();
     }
 
     public UPS getPackage(String code, String userCode) throws IOException {
+
+        UPS byCode = repository.findByCode(code);
+        if(byCode != null)
+            if(byCode.getStatus().equals("D"))
+                return byCode;
 
         HttpClient httpclient = HttpClientBuilder.create().build();
         HttpPost httppost = new HttpPost("https://wwwcie.ups.com/rest/Track");

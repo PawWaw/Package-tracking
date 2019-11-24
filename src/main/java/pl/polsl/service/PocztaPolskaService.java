@@ -32,6 +32,11 @@ public class PocztaPolskaService {
 
     public PocztaPolska getPackage(String code, String userCode) throws SOAPException, JSONException {
 
+        final PocztaPolska byCode = repository.findByCode(code);
+        if(byCode != null)
+            if(byCode.getDeliveredFlag().equals("true"))
+                return byCode;
+
         String soapEndpointUrl = "https://tt.poczta-polska.pl/Sledzenie/services/Sledzenie?wsdl";
         String soapAction = "http://sledzenie.pocztapolska.pl/sprawdzPrzesylke";
         SOAPMessage message = callPPWebService(soapEndpointUrl, soapAction, code);
