@@ -1,10 +1,11 @@
-package pl.polsl.model;
+package pl.polsl.model.inPostModels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.Objects;
 
 @Document(collection = "InPost")
 public class InPost {
@@ -140,5 +141,28 @@ public class InPost {
 
     public void setUserCode(String userCode) {
         this.userCode = userCode;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InPost inPost = (InPost) o;
+        return Objects.equals(code, inPost.code) &&
+                Objects.equals(updated_at, inPost.updated_at) &&
+                Objects.equals(service, inPost.service) &&
+                Objects.equals(expected_flow, inPost.expected_flow) &&
+                Objects.equals(tracking_number, inPost.tracking_number) &&
+                Objects.equals(created_at, inPost.created_at) &&
+                Objects.equals(tracking_details, inPost.tracking_details) &&
+                Objects.equals(type, inPost.type) &&
+                Objects.equals(status, inPost.status) &&
+                Objects.equals(custom_attributes, inPost.custom_attributes) &&
+                Objects.equals(userCode, inPost.userCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, updated_at, service, expected_flow, tracking_number, created_at, tracking_details, type, status, custom_attributes, userCode);
     }
 }

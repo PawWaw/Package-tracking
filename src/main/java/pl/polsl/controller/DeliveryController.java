@@ -4,6 +4,7 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.polsl.service.AllegroService;
 import pl.polsl.model.Delivery;
@@ -21,6 +22,7 @@ public class DeliveryController {
     @Autowired
     private DeliveryService service;
 
+    @PreAuthorize("#oauth2.hasScope('read')")
     @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Add delivery status", nickname = "addDelivery", notes = "", tags={ "Delivery", })
     @ApiResponses(value = {
@@ -36,6 +38,7 @@ public class DeliveryController {
         return new ResponseEntity<Delivery>(HttpStatus.OK);
     }
 
+    @PreAuthorize("#oauth2.hasScope('read')")
     @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get token", nickname = "getToken", notes = "", tags={ "Allegro", })
     @ApiResponses(value = {
@@ -52,6 +55,7 @@ public class DeliveryController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PreAuthorize("#oauth2.hasScope('read')")
     @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get account data", nickname = "getMe", notes = "", tags={ "Allegro", })
     @ApiResponses(value = {
@@ -66,6 +70,7 @@ public class DeliveryController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("#oauth2.hasScope('read')")
     @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Check if token is set", nickname = "checkToken", notes = "", tags={ "Allegro", })
     @ApiResponses(value = {
@@ -76,9 +81,13 @@ public class DeliveryController {
             produces = { "application/json" },
             method = RequestMethod.GET)
     public ResponseEntity<Boolean> checkToken() {
-        return bool ? new ResponseEntity<Boolean>(true, HttpStatus.OK) : new ResponseEntity<Boolean>(false, HttpStatus.OK);
+        if (bool)
+            return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+        else
+            return new ResponseEntity<Boolean>(false, HttpStatus.OK);
     }
 
+    @PreAuthorize("#oauth2.hasScope('read')")
     @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Erase token", nickname = "eraseToken", notes = "", tags={ "Allegro", })
     @ApiResponses(value = {
@@ -93,6 +102,7 @@ public class DeliveryController {
         return new ResponseEntity<Boolean>(false, HttpStatus.OK);
     }
 
+    @PreAuthorize("#oauth2.hasScope('read')")
     @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Delete delivery by its unique code", nickname = "deleteDelivery", notes = "", tags={ "Delivery", })
     @ApiResponses(value = {
@@ -107,6 +117,7 @@ public class DeliveryController {
         return new ResponseEntity<Delivery>(HttpStatus.OK);
     }
 
+    @PreAuthorize("#oauth2.hasScope('read')")
     @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Finds delivery by its unique code", nickname = "getDelivery", notes = "", tags={ "Delivery", })
     @ApiResponses(value = {
@@ -120,6 +131,7 @@ public class DeliveryController {
         return new ResponseEntity<Delivery>(service.getDelivery(code), HttpStatus.OK);
     }
 
+    @PreAuthorize("#oauth2.hasScope('read')")
     @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Update specific delivery", nickname = "modifyDelivery", notes = "", tags={ "Delivery", })
     @ApiResponses(value = {
@@ -135,6 +147,7 @@ public class DeliveryController {
         return new ResponseEntity<Delivery>(HttpStatus.OK);
     }
 
+    @PreAuthorize("#oauth2.hasScope('read')")
     @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get all active deliveries", nickname = "getAllDeliveries", notes = "", tags={ "Delivery", })
     @ApiResponses(value = {

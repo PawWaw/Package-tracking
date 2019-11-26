@@ -1,10 +1,11 @@
-package pl.polsl.model;
+package pl.polsl.model.pocztaPolskaModels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.Objects;
 
 @Document(collection = "PocztaPolska")
 public class PocztaPolska {
@@ -129,5 +130,27 @@ public class PocztaPolska {
 
     public void setUserCode(String userCode) {
         this.userCode = userCode;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PocztaPolska that = (PocztaPolska) o;
+        return  Objects.equals(code, that.code) &&
+                Objects.equals(sendCountry, that.sendCountry) &&
+                Objects.equals(arrivalCountry, that.arrivalCountry) &&
+                Objects.equals(sendDate, that.sendDate) &&
+                Objects.equals(packageType, that.packageType) &&
+                Objects.equals(sendPostOffice, that.sendPostOffice) &&
+                Objects.equals(arrivalPostOffice, that.arrivalPostOffice) &&
+                Objects.equals(deliveredFlag, that.deliveredFlag) &&
+                Objects.equals(events, that.events) &&
+                Objects.equals(userCode, that.userCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, code, sendCountry, arrivalCountry, sendDate, packageType, sendPostOffice, arrivalPostOffice, deliveredFlag, events, userCode);
     }
 }

@@ -1,16 +1,15 @@
 package pl.polsl.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.XML;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import pl.polsl.controller.FedexRepository;
-import pl.polsl.model.Fedex;
+import pl.polsl.model.fedexModels.Fedex;
+import pl.polsl.model.fedexModels.FedexDates;
+import pl.polsl.model.fedexModels.FedexDetails;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,34 +22,62 @@ public class FedexService {
         return repository.findAll();
     }
 
-    public Fedex getPackage(String code, String userCode) throws Exception{
+    public Fedex getPackage(String code, String userCode) throws Exception {
 
         Fedex byCode = repository.findByCode(code);
-        if(byCode != null)
+        if (byCode != null)
             return byCode;
 
-        Fedex tracking = new Fedex();// = getJSON(code);
+        Fedex tracking = getJSON(code);
         tracking.setCode(code);
         tracking.setUserCode(userCode);
-        String message = callFedexService(code);
-        tracking.setSize(message.length());
-        repository.save(tracking);
+
+        Fedex temp = repository.findByCode(code);
+        if(temp == null)
+            repository.save(tracking);
+        else if (!temp.equals(tracking))
+            repository.save(tracking);
+
         return tracking;
     }
 
     private Fedex getJSON(String code) {
         String message = callFedexService(code);
         Fedex tracking = new Fedex();
-        int temp = message.indexOf("<CompletedTrackDetails>");
-        int temp2 = message.indexOf("</CompletedTrackDetails>") + 24;
+        tracking.setSize(message.length());
+        int temp = message.indexOf("</TrackDetailsCount>") + 20;
+        int temp2 = message.indexOf("</CompletedTrackDetails>");
         message = message.substring(temp, temp2);
 
-        try {
-            JSONObject xmlJSONObj = XML.toJSONObject(message);
-            tracking.setCompletedTrackDetails(xmlJSONObj);
-        } catch (JSONException je) {
-            System.out.println(je.toString());
+        List<FedexDetails> list = new ArrayList<>();
+        while (message.contains("<TrackDetails>")) {
+            String details = message.substring(message.indexOf("<Notification>"), message.indexOf("</TrackDetails>"));
+            FedexDetails tempDetails = new FedexDetails();
+            tempDetails.setTrackingNumber(details.substring(details.indexOf("<TrackingNumber>") + 16, details.indexOf("</TrackingNumber>")));
+            tempDetails.setTrackingNumberUniqueIdentifier(details.substring(details.indexOf("<TrackingNumberUniqueIdentifier>") + 32, details.indexOf("</TrackingNumberUniqueIdentifier>")));
+            tempDetails.setCarrierCode(details.substring(details.indexOf("<CarrierCode>") + 13, details.indexOf("</CarrierCode>")));
+            tempDetails.setOperatingCompanyOrCarrierDescription(details.substring(details.indexOf("<OperatingCompanyOrCarrierDescription>") + 38, details.indexOf("</OperatingCompanyOrCarrierDescription>")));
+            tempDetails.setPackageSequenceNumber(details.substring(details.indexOf("<PackageSequenceNumber>") + 23, details.indexOf("</PackageSequenceNumber>")));
+            tempDetails.setPackageCount(details.substring(details.indexOf("<PackageCount>") + 14, details.indexOf("</PackageCount>")));
+
+            List<FedexDates> dates = new ArrayList<>();
+            while (details.contains("<DatesOrTimes>")) {
+                FedexDates date = new FedexDates();
+                date.setDate(details.substring(details.indexOf("<Type>") + 6, details.indexOf("</Type>")));
+                date.setType(details.substring(details.indexOf("<DateOrTimestamp>") + 17, details.indexOf("</DateOrTimestamp>")));
+                details = details.substring(details.indexOf("<DatesOrTimes>") + 14);
+                dates.add(date);
+            }
+
+            tempDetails.setDeliveryAttempts(details.substring(details.indexOf("<DeliveryAttempts>") + 18, details.indexOf("</DeliveryAttempts>")));
+            tempDetails.setTotalUniqueAddressCountInConsolidation(details.substring(details.indexOf("<TotalUniqueAddressCountInConsolidation>") + 40, details.indexOf("</TotalUniqueAddressCountInConsolidation>")));
+
+            list.add(tempDetails);
+            message = message.substring(message.indexOf("</TrackDetails>") + 15);
         }
+
+
+        tracking.setCompletedTrackDetails(list);
 
         return tracking;
     }

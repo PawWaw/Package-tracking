@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import pl.polsl.controller.InPostRepository;
-import pl.polsl.model.InPost;
+import pl.polsl.model.inPostModels.InPost;
 
 import java.util.List;
 
@@ -22,10 +22,14 @@ public class InPostService {
     private InPostRepository repository;
 
     private void addPackage(InPost tracking) {
-        if(repository.findByCode(tracking.getCode()) == null)
+        InPost temp = repository.findByCode(tracking.getCode());
+        if(temp == null)
             repository.save(tracking);
-        else if (!repository.findByCode(tracking.getCode()).getTracking_details().get(0).getStatus().equals("delivered"))
+        else if (!temp.equals(tracking))
+        {
+            tracking.setId(temp.getId());
             repository.save(tracking);
+        }
     }
 
     public InPost getPackage(String code, String userCode) throws Exception {

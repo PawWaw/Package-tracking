@@ -4,8 +4,8 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.polsl.controller.PocztaPolskaRepository;
-import pl.polsl.model.PocztaPolska;
-import pl.polsl.model.PocztaPolskaDetails;
+import pl.polsl.model.pocztaPolskaModels.PocztaPolska;
+import pl.polsl.model.pocztaPolskaModels.PocztaPolskaDetails;
 
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
@@ -20,10 +20,12 @@ public class PocztaPolskaService {
 
     private void addPackage(PocztaPolska tracking) {
         PocztaPolska temp = repository.findByCode(tracking.getCode());
-        if(temp == null)
+        if (temp == null)
             repository.save(tracking);
-        else if (!temp.getDeliveredFlag().equals("true"))
+        else if (!temp.equals(tracking)) {
+            tracking.setId(temp.getId());
             repository.save(tracking);
+        }
     }
 
     public List<PocztaPolska> getAll() {
@@ -33,8 +35,8 @@ public class PocztaPolskaService {
     public PocztaPolska getPackage(String code, String userCode) throws SOAPException, JSONException {
 
         final PocztaPolska byCode = repository.findByCode(code);
-        if(byCode != null)
-            if(byCode.getDeliveredFlag().equals("true"))
+        if (byCode != null)
+            if (byCode.getDeliveredFlag().equals("true"))
                 return byCode;
 
         String soapEndpointUrl = "https://tt.poczta-polska.pl/Sledzenie/services/Sledzenie?wsdl";

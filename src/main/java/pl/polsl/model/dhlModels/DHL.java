@@ -1,10 +1,11 @@
-package pl.polsl.model;
+package pl.polsl.model.dhlModels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.Objects;
 
 @Document(collection = "DHL")
 public class DHL {
@@ -74,5 +75,22 @@ public class DHL {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DHL dhl = (DHL) o;
+        return Objects.equals(code, dhl.code) &&
+                Objects.equals(userCode, dhl.userCode) &&
+                Objects.equals(received_by, dhl.received_by) &&
+                Objects.equals(events, dhl.events) &&
+                Objects.equals(status, dhl.status);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, userCode, received_by, events, status);
     }
 }

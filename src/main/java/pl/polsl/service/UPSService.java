@@ -10,7 +10,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.polsl.controller.UPSRepository;
-import pl.polsl.model.UPS;
+import pl.polsl.model.upsModels.UPS;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,7 +26,8 @@ public class UPSService {
         UPS temp = repository.findByCode(tracking.getCode());
         if(temp == null)
             repository.save(tracking);
-        else if (!temp.getStatus().equals("D"))
+        else if (!temp.equals(tracking))
+            tracking.setId(temp.getId());
             repository.save(tracking);
     }
 
@@ -53,7 +54,7 @@ public class UPSService {
 
         ObjectMapper objectMapper = new ObjectMapper();
         UPS tracking = objectMapper.readValue(entity.getContent(), UPS.class);
-        tracking.setStatus(tracking.getTrackResponse().toString().substring(tracking.getTrackResponse().toString().indexOf("Status={Type=") + 13, tracking.getTrackResponse().toString().indexOf("Status={Type=") + 14));
+        tracking.setStatus(tracking.getTrackResponse().getShipment().getPackage().getActivity().get(0).getStatus().getType());
         tracking.setCode(code);
         tracking.setUserCode(userCode);
         addPackage(tracking);

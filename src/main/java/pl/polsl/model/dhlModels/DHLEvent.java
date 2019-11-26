@@ -1,6 +1,8 @@
-package pl.polsl.model;
+package pl.polsl.model.dhlModels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Objects;
 
 public class DHLEvent {
 
@@ -46,5 +48,21 @@ public class DHLEvent {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DHLEvent dhlEvent = (DHLEvent) o;
+        return Objects.equals(status, dhlEvent.status) &&
+                Objects.equals(description, dhlEvent.description) &&
+                Objects.equals(terminal, dhlEvent.terminal) &&
+                Objects.equals(timestamp, dhlEvent.timestamp);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(status, description, terminal, timestamp);
     }
 }

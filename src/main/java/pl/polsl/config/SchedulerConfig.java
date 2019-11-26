@@ -8,8 +8,12 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import pl.polsl.controller.*;
-import pl.polsl.model.*;
-import pl.polsl.model.Fedex;
+import pl.polsl.model.User;
+import pl.polsl.model.dhlModels.DHL;
+import pl.polsl.model.fedexModels.Fedex;
+import pl.polsl.model.inPostModels.InPost;
+import pl.polsl.model.pocztaPolskaModels.PocztaPolska;
+import pl.polsl.model.upsModels.UPS;
 import pl.polsl.service.*;
 
 import java.util.ArrayList;
@@ -110,11 +114,8 @@ public class SchedulerConfig {
 
             for (PocztaPolska pocztaPolska : pocztaPolskaList) {
                 if (pocztaPolska.getUserCode().equals(user.getUsername())) {
-                    id = pocztaPolska.getId();
-                    pocztaPolska.setId(null);
                     PocztaPolska temp = pocztaPolskaService.getPackage(pocztaPolska.getCode(), user.getUsername());
                     if (!pocztaPolska.equals(temp)) {
-                        temp.setId(id);
                         pocztaPolskaChanges.add(temp);
                         pocztaPolskaRepository.save(temp);
                     }
@@ -145,7 +146,7 @@ public class SchedulerConfig {
                     id = fedex.getId();
                     fedex.setId(null);
                     Fedex temp = fedexService.getPackage(fedex.getCode(), user.getUsername());
-                    if (fedex.getSize() != temp.getSize()) {
+                    if (!fedex.getSize().equals(temp.getSize())) {
                         temp.setId(id);
                         fedexListChanges.add(temp);
                         fedexRepository.save(temp);
@@ -153,17 +154,23 @@ public class SchedulerConfig {
                 }
             }
 
-            if (inPostChanges.size() != 0 || pocztaPolskaChanges.size() != 0 || upsListChanges.size() != 0 || fedexListChanges.size() != 0 || dhlChanges.size() != 0)
-            {
+            if (inPostChanges.size() != 0 || pocztaPolskaChanges.size() != 0 || upsListChanges.size() != 0 || fedexListChanges.size() != 0 || dhlChanges.size() != 0) {
                 String data = "";
                 for (InPost inPostChange : inPostChanges)
-                    data = data + inPostChange.getCode() + "\n";
-
-
-
+                    data = data + inPostChanges.getClass() + ": " + inPostChange.getCode() + "\n";
+                for (PocztaPolska pocztaPolskaChange : pocztaPolskaChanges)
+                    data = data + pocztaPolskaChanges.getClass() + ": " + pocztaPolskaChange.getCode() + "\n";
+                for (UPS upsListChange : upsListChanges)
+                    data = data + upsListChange.getClass() + ": " + upsListChange.getCode() + "\n";
+                for (Fedex fedexListChange : fedexListChanges)
+                    data = data + fedexListChanges.getClass() + ": " + fedexListChange.getCode() + "\n";
+                for (DHL dhlChange : dhlChanges)
+                    data = data + dhlChanges.getClass() + ": " + dhlChange.getCode() + "\n";
 
                 email.sendSimpleMessage(user.getEmail(), "<NoReply> Your packages changed their statuses!",
-                        "Some of your packages changed their statuses. Please, login and check it out.");
+                        "Some of your packages changed their statuses. Codes:\n" +
+                                data +
+                                " Please, login and check it out.");
             }
         }
     }

@@ -1,8 +1,11 @@
-package pl.polsl.model;
+package pl.polsl.model.fedexModels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
+import java.util.Objects;
 
 @Document(collection = "Fedex")
 public class Fedex {
@@ -21,7 +24,7 @@ public class Fedex {
     private Integer size = null;
 
     @JsonProperty("completedTrackDetails")
-    private Object CompletedTrackDetails = null;
+    private List<FedexDetails> CompletedTrackDetails = null;
 
     public String getId() {
         return id;
@@ -55,11 +58,27 @@ public class Fedex {
         this.size = size;
     }
 
-    public Object getCompletedTrackDetails() {
+    public List<FedexDetails> getCompletedTrackDetails() {
         return CompletedTrackDetails;
     }
 
-    public void setCompletedTrackDetails(Object completedTrackDetails) {
+    public void setCompletedTrackDetails(List<FedexDetails> completedTrackDetails) {
         CompletedTrackDetails = completedTrackDetails;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Fedex fedex = (Fedex) o;
+        return Objects.equals(code, fedex.code) &&
+                Objects.equals(userCode, fedex.userCode) &&
+                Objects.equals(size, fedex.size) &&
+                Objects.equals(CompletedTrackDetails, fedex.CompletedTrackDetails);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, userCode, size, CompletedTrackDetails);
     }
 }

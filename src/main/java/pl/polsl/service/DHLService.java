@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import pl.polsl.controller.DHLRepository;
-import pl.polsl.model.DHL;
-import pl.polsl.model.DHLEvent;
+import pl.polsl.model.dhlModels.DHL;
+import pl.polsl.model.dhlModels.DHLEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class DHLService {
         DHL temp = repository.findByCode(tracking.getCode());
         if(temp == null)
             repository.save(tracking);
-        else if (!(temp.getEvents().get(temp.getEvents().size() - 1).getStatus().equals("ZWN") || temp.getEvents().get(temp.getEvents().size() - 1).getStatus().equals("DOR")))
+        else if(!temp.equals(tracking))
             repository.save(tracking);
 
         return tracking;
