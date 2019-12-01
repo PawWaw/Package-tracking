@@ -7,6 +7,9 @@ import java.util.Objects;
 
 public class InPostDetails {
 
+    @JsonProperty("code")
+    private String code = null;
+
     @JsonProperty("status")
     private String status = null;
 
@@ -18,6 +21,14 @@ public class InPostDetails {
 
     @JsonProperty("datetime")
     private String datetime = null;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     public String getStatus() {
         return status;

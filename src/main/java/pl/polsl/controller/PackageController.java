@@ -11,9 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.polsl.model.dhlModels.DHL;
+import pl.polsl.model.dhlModels.DHLDetail;
 import pl.polsl.model.fedexModels.Fedex;
 import pl.polsl.model.inPostModels.InPost;
+import pl.polsl.model.inPostModels.InPostDataList;
+import pl.polsl.model.inPostModels.InPostDetails;
 import pl.polsl.model.pocztaPolskaModels.PocztaPolska;
+import pl.polsl.model.pocztaPolskaModels.PocztaPolskaEvent;
 import pl.polsl.model.upsModels.UPS;
 import pl.polsl.service.*;
 
@@ -38,6 +42,9 @@ public class PackageController {
 
     @Autowired
     private PocztaPolskaService pocztaPolska;
+
+    @Autowired
+    private UnknownService unknownService;
 
     @Autowired
     private CommonsService commons;
@@ -67,8 +74,8 @@ public class PackageController {
     @RequestMapping(value = "/dhl",
             produces = {"application/json"},
             method = RequestMethod.GET)
-    public ResponseEntity<List<DHL>> getDHLPackage() {
-        return new ResponseEntity<>(dhl.getAll(), HttpStatus.OK);
+    public ResponseEntity<List<DHLDetail>> getDHLPackage(@RequestHeader("authorization") String token) {
+        return new ResponseEntity<>(dhl.getAll(commons.getUserFromJWT(token)), HttpStatus.OK);
     }
 
 
@@ -157,8 +164,8 @@ public class PackageController {
     @RequestMapping(value = "/inpost",
             produces = {"application/json"},
             method = RequestMethod.GET)
-    public ResponseEntity<List<InPost>> getInPostAllPackages() {
-        List<InPost> list = inPost.getAll();
+    public ResponseEntity<List<InPostDetails>> getInPostAllPackages(@RequestHeader("authorization") String token) {
+        List<InPostDetails> list = inPost.getAll(commons.getUserFromJWT(token));
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
@@ -188,7 +195,22 @@ public class PackageController {
     @RequestMapping(value = "/pocztapolska",
             produces = {"application/json"},
             method = RequestMethod.GET)
-    public ResponseEntity<List<PocztaPolska>> getPocztaPolskaAllPackages() throws JSONException {
-        return new ResponseEntity<>(pocztaPolska.getAll(), HttpStatus.OK);
+    public ResponseEntity<List<PocztaPolskaEvent>> getPocztaPolskaAllPackages(@RequestHeader("authorization") String token) throws JSONException {
+        return new ResponseEntity<>(pocztaPolska.getAll(commons.getUserFromJWT(token)), HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("#oauth2.hasScope('read')")
+    @CrossOrigin(origins = "http://localhost:4200")
+    @ApiOperation(value = "Get package by unknown code", nickname = "getPackage", notes = "", tags = {"PocztaPolska",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 204, message = "Package not found"),
+            @ApiResponse(code = 500, message = "Internal error")})
+    @RequestMapping(value = "/unknown/{code}",
+            produces = {"application/json"},
+            method = RequestMethod.GET)
+    public ResponseEntity<Object> getUnknownPackage(@ApiParam(value = "", required = true) @PathVariable("code") String code, @RequestHeader("authorization") String token) throws SOAPException, JSONException {
+        return new ResponseEntity<>(unknownService.getUnknown(code, commons.getUserFromJWT(token)), HttpStatus.OK);
     }
 }

@@ -1,5 +1,6 @@
 package pl.polsl.service;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -24,11 +25,11 @@ public class UPSService {
     private void addPackage(UPS tracking) {
 
         UPS temp = repository.findByCode(tracking.getCode());
-        if(temp == null)
+        if (temp == null)
             repository.save(tracking);
         else if (!temp.equals(tracking))
             tracking.setId(temp.getId());
-            repository.save(tracking);
+        repository.save(tracking);
     }
 
     public List<UPS> getAll() {
@@ -38,14 +39,14 @@ public class UPSService {
     public UPS getPackage(String code, String userCode) throws IOException {
 
         UPS byCode = repository.findByCode(code);
-        if(byCode != null)
-            if(byCode.getStatus().equals("D"))
+        if (byCode != null)
+            if (byCode.getStatus().equals("D"))
                 return byCode;
 
         HttpClient httpclient = HttpClientBuilder.create().build();
         HttpPost httppost = new HttpPost("https://wwwcie.ups.com/rest/Track");
 
-        StringEntity params = new StringEntity("{\"UPSSecurity\":{\"UsernameToken\":{\"Username\": \"pawelwaw123\",\"Password\":\"last-legi0n\"},\"ServiceAccessToken\":{\"AccessLicenseNumber\":\"6D6FFE40C320D695\"}},\"TrackRequest\":{\"Request\":{\"RequestOption\":\"1\"},\"InquiryNumber\":\""+ code +"\"}} ");
+        StringEntity params = new StringEntity("{\"UPSSecurity\":{\"UsernameToken\":{\"Username\": \"pawelwaw123\",\"Password\":\"last-legi0n\"},\"ServiceAccessToken\":{\"AccessLicenseNumber\":\"6D6FFE40C320D695\"}},\"TrackRequest\":{\"Request\":{\"RequestOption\":\"1\"},\"InquiryNumber\":\"" + code + "\"}} ");
 
         httppost.setEntity(params);
 
@@ -53,6 +54,7 @@ public class UPSService {
         HttpEntity entity = response.getEntity();
 
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
         UPS tracking = objectMapper.readValue(entity.getContent(), UPS.class);
         tracking.setStatus(tracking.getTrackResponse().getShipment().getPackage().getActivity().get(0).getStatus().getType());
         tracking.setCode(code);

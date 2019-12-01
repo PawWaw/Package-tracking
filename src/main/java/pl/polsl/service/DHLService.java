@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import pl.polsl.controller.DHLRepository;
 import pl.polsl.model.dhlModels.DHL;
+import pl.polsl.model.dhlModels.DHLDetail;
 import pl.polsl.model.dhlModels.DHLEvent;
 
 import java.util.ArrayList;
@@ -17,8 +18,27 @@ public class DHLService {
     @Autowired
     private DHLRepository repository;
 
-    public List<DHL> getAll() {
-        return null;
+    public List<DHLDetail> getAll(String userCode) {
+
+        List<DHL> dhlList = repository.findAll();
+        List<DHLDetail> detailList = new ArrayList<>();
+
+        for (DHL dhl : dhlList) {
+            if (dhl.getUserCode().equals(userCode)) {
+                for (int j = 0; j < dhl.getEvents().size(); j++) {
+                    DHLDetail tempDetail = new DHLDetail();
+                    tempDetail.setCode(dhl.getCode());
+                    tempDetail.setDescription(dhl.getEvents().get(j).getDescription());
+                    tempDetail.setStatus(dhl.getEvents().get(j).getStatus());
+                    tempDetail.setTerminal(dhl.getEvents().get(j).getTerminal());
+                    tempDetail.setTimestamp(dhl.getEvents().get(j).getTimestamp());
+
+                    detailList.add(tempDetail);
+                }
+            }
+        }
+
+        return detailList;
     }
 
     private DHL addPackage(String body, String userCode) {

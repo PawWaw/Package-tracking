@@ -68,7 +68,7 @@ public class FedexService {
                 details = details.substring(details.indexOf("<DatesOrTimes>") + 14);
                 dates.add(date);
             }
-
+            tempDetails.setDatesOrTimes(dates);
             tempDetails.setDeliveryAttempts(details.substring(details.indexOf("<DeliveryAttempts>") + 18, details.indexOf("</DeliveryAttempts>")));
             tempDetails.setTotalUniqueAddressCountInConsolidation(details.substring(details.indexOf("<TotalUniqueAddressCountInConsolidation>") + 40, details.indexOf("</TotalUniqueAddressCountInConsolidation>")));
 

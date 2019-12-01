@@ -1,33 +1,29 @@
 package pl.polsl.model.upsModels;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "TrackingNumber",
-    "Activity",
-    "PackageWeight",
-    "ReferenceNumber"
-})
 public class Package {
 
     @JsonProperty("TrackingNumber")
     private String trackingNumber;
+
     @JsonProperty("Activity")
     private ArrayList<Activity> activity = null;
+
     @JsonProperty("PackageWeight")
     private PackageWeight packageWeight;
+
     @JsonProperty("ReferenceNumber")
     private List<ReferenceNumber_> referenceNumber = null;
+
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 

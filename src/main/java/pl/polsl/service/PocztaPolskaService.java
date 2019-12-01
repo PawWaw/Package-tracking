@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.polsl.controller.PocztaPolskaRepository;
 import pl.polsl.model.pocztaPolskaModels.PocztaPolska;
 import pl.polsl.model.pocztaPolskaModels.PocztaPolskaDetails;
+import pl.polsl.model.pocztaPolskaModels.PocztaPolskaEvent;
 
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
@@ -28,8 +29,25 @@ public class PocztaPolskaService {
         }
     }
 
-    public List<PocztaPolska> getAll() {
-        return repository.findAll();
+    public List<PocztaPolskaEvent> getAll(String userCode) {
+        List<PocztaPolska> pocztaPolskaList = repository.findAll();
+        List<PocztaPolskaEvent> events = new ArrayList<>();
+
+        for (PocztaPolska pocztaPolska : pocztaPolskaList) {
+            if (pocztaPolska.getUserCode().equals(userCode)) {
+                for (int j = 0; j < pocztaPolska.getEvents().size(); j++) {
+                    PocztaPolskaEvent tempItem = new PocztaPolskaEvent();
+                    tempItem.setCode(pocztaPolska.getCode());
+                    tempItem.setDatetime(pocztaPolska.getEvents().get(j).getDatetime());
+                    tempItem.setDescription(pocztaPolska.getEvents().get(j).getDescription());
+                    tempItem.setPlace(pocztaPolska.getEvents().get(j).getPlace());
+                    tempItem.setEndFlag(pocztaPolska.getEvents().get(j).getEndFlag());
+                    tempItem.setEvent_code(pocztaPolska.getEvents().get(j).getEvent_code());
+                    events.add(tempItem);
+                }
+            }
+        }
+        return events;
     }
 
     public PocztaPolska getPackage(String code, String userCode) throws SOAPException, JSONException {
