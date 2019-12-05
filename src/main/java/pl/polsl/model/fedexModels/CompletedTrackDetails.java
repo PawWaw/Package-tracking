@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Objects;
 
-public class FedexDetails {
+public class CompletedTrackDetails {
 
     @JsonProperty("TrackingNumber")
     private String trackingNumber = null;
@@ -25,8 +25,8 @@ public class FedexDetails {
     @JsonProperty("PackageCount")
     private String packageCount = null;
 
-    @JsonProperty("DatesOrTimes")
-    private List<FedexDates> datesOrTimes = null;
+    @JsonProperty("datesOrTimes")
+    private List<datesOrTimes> datesOrTimes = null;
 
     @JsonProperty("DestinationAddress")
     private FedexAddress destinationAddress = null;
@@ -85,11 +85,11 @@ public class FedexDetails {
         this.packageCount = packageCount;
     }
 
-    public List<FedexDates> getDatesOrTimes() {
+    public List<pl.polsl.model.fedexModels.datesOrTimes> getDatesOrTimes() {
         return datesOrTimes;
     }
 
-    public void setDatesOrTimes(List<FedexDates> datesOrTimes) {
+    public void setDatesOrTimes(List<pl.polsl.model.fedexModels.datesOrTimes> datesOrTimes) {
         this.datesOrTimes = datesOrTimes;
     }
 
@@ -121,7 +121,7 @@ public class FedexDetails {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FedexDetails that = (FedexDetails) o;
+        CompletedTrackDetails that = (CompletedTrackDetails) o;
         return Objects.equals(trackingNumber, that.trackingNumber) &&
                 Objects.equals(trackingNumberUniqueIdentifier, that.trackingNumberUniqueIdentifier) &&
                 Objects.equals(carrierCode, that.carrierCode) &&

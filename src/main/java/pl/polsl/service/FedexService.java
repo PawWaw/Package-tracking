@@ -5,9 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import pl.polsl.controller.FedexRepository;
+import pl.polsl.model.fedexModels.CompletedTrackDetails;
 import pl.polsl.model.fedexModels.Fedex;
-import pl.polsl.model.fedexModels.FedexDates;
-import pl.polsl.model.fedexModels.FedexDetails;
+import pl.polsl.model.fedexModels.datesOrTimes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class FedexService {
             repository.save(tracking);
         else if (!temp.equals(tracking))
             repository.save(tracking);
-
+        System.out.println(tracking.getCompletedTrackDetails().get(0).getDatesOrTimes().get(0).getDate());
         return tracking;
     }
 
@@ -49,10 +49,10 @@ public class FedexService {
         int temp2 = message.indexOf("</CompletedTrackDetails>");
         message = message.substring(temp, temp2);
 
-        List<FedexDetails> list = new ArrayList<>();
+        List<CompletedTrackDetails> list = new ArrayList<>();
         while (message.contains("<TrackDetails>")) {
             String details = message.substring(message.indexOf("<Notification>"), message.indexOf("</TrackDetails>"));
-            FedexDetails tempDetails = new FedexDetails();
+            CompletedTrackDetails tempDetails = new CompletedTrackDetails();
             tempDetails.setTrackingNumber(details.substring(details.indexOf("<TrackingNumber>") + 16, details.indexOf("</TrackingNumber>")));
             tempDetails.setTrackingNumberUniqueIdentifier(details.substring(details.indexOf("<TrackingNumberUniqueIdentifier>") + 32, details.indexOf("</TrackingNumberUniqueIdentifier>")));
             tempDetails.setCarrierCode(details.substring(details.indexOf("<CarrierCode>") + 13, details.indexOf("</CarrierCode>")));
@@ -60,9 +60,9 @@ public class FedexService {
             tempDetails.setPackageSequenceNumber(details.substring(details.indexOf("<PackageSequenceNumber>") + 23, details.indexOf("</PackageSequenceNumber>")));
             tempDetails.setPackageCount(details.substring(details.indexOf("<PackageCount>") + 14, details.indexOf("</PackageCount>")));
 
-            List<FedexDates> dates = new ArrayList<>();
+            List<datesOrTimes> dates = new ArrayList<>();
             while (details.contains("<DatesOrTimes>")) {
-                FedexDates date = new FedexDates();
+                datesOrTimes date = new datesOrTimes();
                 date.setDate(details.substring(details.indexOf("<Type>") + 6, details.indexOf("</Type>")));
                 date.setType(details.substring(details.indexOf("<DateOrTimestamp>") + 17, details.indexOf("</DateOrTimestamp>")));
                 details = details.substring(details.indexOf("<DatesOrTimes>") + 14);

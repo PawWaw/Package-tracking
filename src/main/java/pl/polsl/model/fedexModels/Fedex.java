@@ -23,8 +23,8 @@ public class Fedex {
     @JsonProperty("size")
     private Integer size = null;
 
-    @JsonProperty("completedTrackDetails")
-    private List<FedexDetails> CompletedTrackDetails = null;
+    @JsonProperty("CompletedTrackDetails")
+    private List<CompletedTrackDetails> CompletedTrackDetails = null;
 
     public String getId() {
         return id;
@@ -58,11 +58,11 @@ public class Fedex {
         this.size = size;
     }
 
-    public List<FedexDetails> getCompletedTrackDetails() {
+    public List<CompletedTrackDetails> getCompletedTrackDetails() {
         return CompletedTrackDetails;
     }
 
-    public void setCompletedTrackDetails(List<FedexDetails> completedTrackDetails) {
+    public void setCompletedTrackDetails(List<CompletedTrackDetails> completedTrackDetails) {
         CompletedTrackDetails = completedTrackDetails;
     }
 

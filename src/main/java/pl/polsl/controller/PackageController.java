@@ -50,7 +50,6 @@ public class PackageController {
     private CommonsService commons;
 
     @PreAuthorize("#oauth2.hasScope('read')")
-    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get package by dhl code", nickname = "getPackage", notes = "", tags = {"DHL",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -65,7 +64,6 @@ public class PackageController {
 
 
     @PreAuthorize("#oauth2.hasScope('read')")
-    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get pall dhl packages", nickname = "getPackage", notes = "", tags = {"DHL",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -80,7 +78,6 @@ public class PackageController {
 
 
     @PreAuthorize("#oauth2.hasScope('read')")
-    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get package by fedex code", nickname = "getPackage", notes = "", tags = {"Fedex",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -95,7 +92,6 @@ public class PackageController {
 
 
     @PreAuthorize("#oauth2.hasScope('read')")
-    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get all fedex packages", nickname = "getPackage", notes = "", tags = {"Fedex",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -110,7 +106,6 @@ public class PackageController {
 
 
     @PreAuthorize("#oauth2.hasScope('read')")
-    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get package by ups code", nickname = "getPackage", notes = "", tags = {"UPS",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -125,7 +120,6 @@ public class PackageController {
 
 
     @PreAuthorize("#oauth2.hasScope('read')")
-    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get all ups packages", nickname = "getPackage", notes = "", tags = {"UPS",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -140,7 +134,6 @@ public class PackageController {
 
 
     @PreAuthorize("#oauth2.hasScope('read')")
-    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get package by inpost code", nickname = "getPackage", notes = "", tags = {"InPost",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -155,7 +148,6 @@ public class PackageController {
 
 
     @PreAuthorize("#oauth2.hasScope('read')")
-    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get all inpost packages from DB", nickname = "getPackages", notes = "", tags = {"InPost",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -171,7 +163,6 @@ public class PackageController {
 
 
     @PreAuthorize("#oauth2.hasScope('read')")
-    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get package by Poczta Polska code", nickname = "getPackage", notes = "", tags = {"PocztaPolska",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -186,7 +177,6 @@ public class PackageController {
 
 
     @PreAuthorize("#oauth2.hasScope('read')")
-    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get all Poczta Polska packages", nickname = "getPackages", notes = "", tags = {"PocztaPolska",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
@@ -201,7 +191,6 @@ public class PackageController {
 
 
     @PreAuthorize("#oauth2.hasScope('read')")
-    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get package by unknown code", nickname = "getPackage", notes = "", tags = {"PocztaPolska",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),
