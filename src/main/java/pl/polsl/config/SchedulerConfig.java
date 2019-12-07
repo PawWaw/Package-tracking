@@ -130,7 +130,7 @@ public class SchedulerConfig {
                 if (ups.getUserCode().equals(user.getUsername())) {
                     id = ups.getId();
                     ups.setId(null);
-                    UPS temp = upsService.getPackage(ups.getCode(), user.getUsername());
+                    UPS temp = upsService.getFullPackage(ups.getCode(), user.getUsername());
                     if (!ups.equals(temp)) {
                         temp.setId(id);
                         upsListChanges.add(temp);
@@ -145,7 +145,7 @@ public class SchedulerConfig {
                 if (fedex.getUserCode().equals(user.getUsername())) {
                     id = fedex.getId();
                     fedex.setId(null);
-                    Fedex temp = fedexService.getPackage(fedex.getCode(), user.getUsername());
+                    Fedex temp = fedexService.getFullPackage(fedex.getCode(), user.getUsername());
                     if (!fedex.getSize().equals(temp.getSize())) {
                         temp.setId(id);
                         fedexListChanges.add(temp);

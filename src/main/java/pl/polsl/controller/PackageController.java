@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import pl.polsl.model.dhlModels.DHL;
 import pl.polsl.model.dhlModels.DHLDetail;
 import pl.polsl.model.fedexModels.Fedex;
+import pl.polsl.model.fedexModels.FedexDates;
 import pl.polsl.model.inPostModels.InPost;
-import pl.polsl.model.inPostModels.InPostDataList;
 import pl.polsl.model.inPostModels.InPostDetails;
 import pl.polsl.model.pocztaPolskaModels.PocztaPolska;
 import pl.polsl.model.pocztaPolskaModels.PocztaPolskaEvent;
+import pl.polsl.model.upsModels.StatusChanges;
 import pl.polsl.model.upsModels.UPS;
 import pl.polsl.service.*;
 
@@ -86,7 +87,7 @@ public class PackageController {
     @RequestMapping(value = "/fedex/{code}",
             produces = {"application/json"},
             method = RequestMethod.GET)
-    public ResponseEntity<Fedex> getFedexPackage(@ApiParam(value = "", required = true) @PathVariable("code") String code, @RequestHeader("authorization") String token) throws Exception {
+    public ResponseEntity<List<FedexDates>> getFedexPackage(@ApiParam(value = "", required = true) @PathVariable("code") String code, @RequestHeader("authorization") String token) throws Exception {
         return new ResponseEntity<>(fedex.getPackage(code, commons.getUserFromJWT(token)), HttpStatus.OK);
     }
 
@@ -100,8 +101,8 @@ public class PackageController {
     @RequestMapping(value = "/fedex",
             produces = {"application/json"},
             method = RequestMethod.GET)
-    public ResponseEntity<List<Fedex>> getFedexAllPackages() {
-        return new ResponseEntity<>(fedex.getAll(), HttpStatus.OK);
+    public ResponseEntity<List<FedexDates>> getFedexAllPackages(@RequestHeader("authorization") String token) {
+        return new ResponseEntity<>(fedex.getAll(commons.getUserFromJWT(token)), HttpStatus.OK);
     }
 
 
@@ -114,7 +115,7 @@ public class PackageController {
     @RequestMapping(value = "/ups/{code}",
             produces = {"application/json"},
             method = RequestMethod.GET)
-    public ResponseEntity<UPS> getUPSPackage(@ApiParam(value = "", required = true) @PathVariable("code") String code, @RequestHeader("authorization") String token) throws Exception {
+    public ResponseEntity<List<StatusChanges>> getUPSPackage(@ApiParam(value = "", required = true) @PathVariable("code") String code, @RequestHeader("authorization") String token) throws Exception {
         return new ResponseEntity<>(ups.getPackage(code, commons.getUserFromJWT(token)), HttpStatus.OK);
     }
 
@@ -128,8 +129,8 @@ public class PackageController {
     @RequestMapping(value = "/ups",
             produces = {"application/json"},
             method = RequestMethod.GET)
-    public ResponseEntity<List<UPS>> getUPSAllPackages() {
-        return new ResponseEntity<>(ups.getAll(), HttpStatus.OK);
+    public ResponseEntity<List<StatusChanges>> getUPSAllPackages(@RequestHeader("authorization") String token) {
+        return new ResponseEntity<>(ups.getAll(commons.getUserFromJWT(token)), HttpStatus.OK);
     }
 
 

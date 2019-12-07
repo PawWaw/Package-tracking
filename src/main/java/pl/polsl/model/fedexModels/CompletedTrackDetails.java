@@ -26,7 +26,7 @@ public class CompletedTrackDetails {
     private String packageCount = null;
 
     @JsonProperty("datesOrTimes")
-    private List<datesOrTimes> datesOrTimes = null;
+    private List<FedexDates> FedexDates = null;
 
     @JsonProperty("DestinationAddress")
     private FedexAddress destinationAddress = null;
@@ -85,12 +85,12 @@ public class CompletedTrackDetails {
         this.packageCount = packageCount;
     }
 
-    public List<pl.polsl.model.fedexModels.datesOrTimes> getDatesOrTimes() {
-        return datesOrTimes;
+    public List<FedexDates> getFedexDates() {
+        return FedexDates;
     }
 
-    public void setDatesOrTimes(List<pl.polsl.model.fedexModels.datesOrTimes> datesOrTimes) {
-        this.datesOrTimes = datesOrTimes;
+    public void setFedexDates(List<FedexDates> fedexDates) {
+        this.FedexDates = fedexDates;
     }
 
     public FedexAddress getDestinationAddress() {
@@ -128,7 +128,7 @@ public class CompletedTrackDetails {
                 Objects.equals(operatingCompanyOrCarrierDescription, that.operatingCompanyOrCarrierDescription) &&
                 Objects.equals(packageSequenceNumber, that.packageSequenceNumber) &&
                 Objects.equals(packageCount, that.packageCount) &&
-                Objects.equals(datesOrTimes, that.datesOrTimes) &&
+                Objects.equals(FedexDates, that.FedexDates) &&
                 Objects.equals(destinationAddress, that.destinationAddress) &&
                 Objects.equals(deliveryAttempts, that.deliveryAttempts) &&
                 Objects.equals(totalUniqueAddressCountInConsolidation, that.totalUniqueAddressCountInConsolidation);
@@ -136,6 +136,6 @@ public class CompletedTrackDetails {
 
     @Override
     public int hashCode() {
-        return Objects.hash(trackingNumber, trackingNumberUniqueIdentifier, carrierCode, operatingCompanyOrCarrierDescription, packageSequenceNumber, packageCount, datesOrTimes, destinationAddress, deliveryAttempts, totalUniqueAddressCountInConsolidation);
+        return Objects.hash(trackingNumber, trackingNumberUniqueIdentifier, carrierCode, operatingCompanyOrCarrierDescription, packageSequenceNumber, packageCount, FedexDates, destinationAddress, deliveryAttempts, totalUniqueAddressCountInConsolidation);
     }
 }

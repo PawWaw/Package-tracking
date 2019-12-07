@@ -7,7 +7,8 @@ import org.springframework.web.client.RestTemplate;
 import pl.polsl.controller.FedexRepository;
 import pl.polsl.model.fedexModels.CompletedTrackDetails;
 import pl.polsl.model.fedexModels.Fedex;
-import pl.polsl.model.fedexModels.datesOrTimes;
+import pl.polsl.model.fedexModels.FedexDates;
+import pl.polsl.model.upsModels.StatusChanges;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +19,42 @@ public class FedexService {
     @Autowired
     private FedexRepository repository;
 
-    public List<Fedex> getAll() {
-        return repository.findAll();
+    public List<FedexDates> getAll(String userCode) {
+        List<Fedex> list = repository.findAll();
+        List<FedexDates> statusList = new ArrayList<>();
+
+        for (Fedex fedex : list) {
+            if (fedex.getUserCode().equals(userCode)) {
+                for (int j = 0; j < fedex.getCompletedTrackDetails().get(0).getFedexDates().size(); j++) {
+                    FedexDates temp = new FedexDates();
+                    temp.setDate(fedex.getCompletedTrackDetails().get(0).getFedexDates().get(j).getDate());
+                    temp.setType(fedex.getCompletedTrackDetails().get(0).getFedexDates().get(j).getType());
+                    statusList.add(temp);
+                }
+            }
+        }
+        return statusList;
     }
 
-    public Fedex getPackage(String code, String userCode) throws Exception {
+    public List<FedexDates> getPackage(String code, String userCode) throws Exception {
 
+        Fedex byCode = repository.findByCode(code);
+        if (byCode != null)
+            return byCode.getCompletedTrackDetails().get(0).getFedexDates();
+
+        Fedex tracking = getJSON(code);
+        tracking.setCode(code);
+        tracking.setUserCode(userCode);
+
+        Fedex temp = repository.findByCode(code);
+        if(temp == null)
+            repository.save(tracking);
+        else if (!temp.equals(tracking))
+            repository.save(tracking);
+        return tracking.getCompletedTrackDetails().get(0).getFedexDates();
+    }
+
+    public Fedex getFullPackage(String code, String userCode) {
         Fedex byCode = repository.findByCode(code);
         if (byCode != null)
             return byCode;
@@ -37,7 +68,6 @@ public class FedexService {
             repository.save(tracking);
         else if (!temp.equals(tracking))
             repository.save(tracking);
-        System.out.println(tracking.getCompletedTrackDetails().get(0).getDatesOrTimes().get(0).getDate());
         return tracking;
     }
 
@@ -60,15 +90,15 @@ public class FedexService {
             tempDetails.setPackageSequenceNumber(details.substring(details.indexOf("<PackageSequenceNumber>") + 23, details.indexOf("</PackageSequenceNumber>")));
             tempDetails.setPackageCount(details.substring(details.indexOf("<PackageCount>") + 14, details.indexOf("</PackageCount>")));
 
-            List<datesOrTimes> dates = new ArrayList<>();
+            List<FedexDates> dates = new ArrayList<>();
             while (details.contains("<DatesOrTimes>")) {
-                datesOrTimes date = new datesOrTimes();
+                FedexDates date = new FedexDates();
                 date.setDate(details.substring(details.indexOf("<Type>") + 6, details.indexOf("</Type>")));
                 date.setType(details.substring(details.indexOf("<DateOrTimestamp>") + 17, details.indexOf("</DateOrTimestamp>")));
                 details = details.substring(details.indexOf("<DatesOrTimes>") + 14);
                 dates.add(date);
             }
-            tempDetails.setDatesOrTimes(dates);
+            tempDetails.setFedexDates(dates);
             tempDetails.setDeliveryAttempts(details.substring(details.indexOf("<DeliveryAttempts>") + 18, details.indexOf("</DeliveryAttempts>")));
             tempDetails.setTotalUniqueAddressCountInConsolidation(details.substring(details.indexOf("<TotalUniqueAddressCountInConsolidation>") + 40, details.indexOf("</TotalUniqueAddressCountInConsolidation>")));
 

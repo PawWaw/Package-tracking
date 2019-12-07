@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
-public class datesOrTimes {
+public class FedexDates {
 
-    @JsonProperty("Type")
+    @JsonProperty("type")
     private String type = null;
 
-    @JsonProperty("Date")
+    @JsonProperty("date")
     private String date = null;
 
     public String getType() {
@@ -32,7 +32,7 @@ public class datesOrTimes {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        datesOrTimes that = (datesOrTimes) o;
+        FedexDates that = (FedexDates) o;
         return Objects.equals(type, that.type) &&
                 Objects.equals(date, that.date);
     }
