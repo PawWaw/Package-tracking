@@ -2,6 +2,8 @@ package pl.polsl.model.upsModels;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -110,5 +112,22 @@ public class UPS {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UPS ups = (UPS) o;
+        return Objects.equals(code, ups.code) &&
+                Objects.equals(status, ups.status) &&
+                Objects.equals(trackResponse, ups.trackResponse) &&
+                Objects.equals(userCode, ups.userCode) &&
+                Objects.equals(additionalProperties, ups.additionalProperties);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, status, trackResponse, userCode, _class, additionalProperties);
     }
 }

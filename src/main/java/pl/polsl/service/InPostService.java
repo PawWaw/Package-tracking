@@ -8,7 +8,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import pl.polsl.controller.InPostDetailsRepository;
@@ -36,23 +35,24 @@ public class InPostService {
 
     private void addPackage(InPost tracking) {
         InPost temp = repository.findByCode(tracking.getCode());
-        if(temp == null)
+        if (temp == null)
             repository.save(tracking);
-        else if (!temp.equals(tracking))
-        {
+        else if (!temp.equals(tracking)) {
             tracking.setId(temp.getId());
             repository.save(tracking);
         }
     }
 
     public InPost getPackage(String code, String userCode) throws Exception {
-
+        List<InPostStatuses> tempoo = statusesRepo.findAll();
+        List<InPostDataList> temp = tempoo.get(0).getItems();
         final InPost byCode = repository.findByCode(code);
-        if(byCode != null)
-            if(byCode.getStatus().equals("delivered"))
+
+        if (byCode != null)
+            if (byCode.getStatus().equals("delivered"))
                 return byCode;
 
-        CloseableHttpClient httpClient =  HttpClients.createDefault();
+        CloseableHttpClient httpClient = HttpClients.createDefault();
         String getCategoriesUrl = "https://api-shipx-pl.easypack24.net/v1/tracking/" + code;
 
         HttpGet request = new HttpGet(getCategoriesUrl);
@@ -65,11 +65,20 @@ public class InPostService {
 
             HttpEntity entity = response.getEntity();
             ObjectMapper objectMapper = new ObjectMapper();
+            String tempyy = entity.getContent().toString();
             InPost tracking = objectMapper.readValue(entity.getContent(), InPost.class);
             tracking.setCode(tracking.getTracking_number());
             tracking.setUserCode(userCode);
             Header headers = entity.getContentType();
             addPackage(tracking);
+
+            for (int j = 0; j < tracking.getTracking_details().size(); j++) {
+                for (InPostDataList inPostDataList : temp) {
+                    if (inPostDataList.getName().equals(tracking.getTracking_details().get(j).getStatus())) {
+                        tracking.setStatus(inPostDataList.getDescription());
+                    }
+                }
+            }
 
             return tracking;
         }
@@ -89,9 +98,9 @@ public class InPostService {
                     tempDetails.setAgency(inPost.getTracking_details().get(j).getAgency());
                     tempDetails.setDatetime(inPost.getTracking_details().get(j).getDatetime());
                     tempDetails.setOrigin_status(inPost.getTracking_details().get(j).getOrigin_status());
-                    for (int k = 0; k < temp.size(); k++) {
-                        if (temp.get(k).getName().equals(inPost.getTracking_details().get(j).getStatus())) {
-                            tempDetails.setStatus(temp.get(k).getDescription());
+                    for (InPostDataList inPostDataList : temp) {
+                        if (inPostDataList.getName().equals(inPost.getTracking_details().get(j).getStatus())) {
+                            tempDetails.setStatus(inPostDataList.getDescription());
                         }
                     }
                     detailsList.add(tempDetails);

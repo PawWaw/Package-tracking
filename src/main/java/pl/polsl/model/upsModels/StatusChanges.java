@@ -2,6 +2,8 @@ package pl.polsl.model.upsModels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Objects;
+
 public class StatusChanges {
 
     @JsonProperty("date")
@@ -79,5 +81,24 @@ public class StatusChanges {
 
     public void setPackageCode(String packageCode) {
         this.packageCode = packageCode;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StatusChanges that = (StatusChanges) o;
+        return Objects.equals(date, that.date) &&
+                Objects.equals(time, that.time) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(code, that.code) &&
+                Objects.equals(city, that.city) &&
+                Objects.equals(packageCode, that.packageCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(date, time, type, description, code, city, packageCode);
     }
 }

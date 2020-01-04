@@ -135,6 +135,7 @@ public class PackageController {
 
 
     @PreAuthorize("#oauth2.hasScope('read')")
+    @CrossOrigin(origins = "http://localhost:4200")
     @ApiOperation(value = "Get package by inpost code", nickname = "getPackage", notes = "", tags = {"InPost",})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK"),

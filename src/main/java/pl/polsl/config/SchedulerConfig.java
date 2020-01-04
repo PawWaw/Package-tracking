@@ -131,6 +131,7 @@ public class SchedulerConfig {
                     id = ups.getId();
                     ups.setId(null);
                     UPS temp = upsService.getFullPackage(ups.getCode(), user.getUsername());
+                    temp.setId(null);
                     if (!ups.equals(temp)) {
                         temp.setId(id);
                         upsListChanges.add(temp);
@@ -157,20 +158,20 @@ public class SchedulerConfig {
             if (inPostChanges.size() != 0 || pocztaPolskaChanges.size() != 0 || upsListChanges.size() != 0 || fedexListChanges.size() != 0 || dhlChanges.size() != 0) {
                 String data = "";
                 for (InPost inPostChange : inPostChanges)
-                    data = data + inPostChanges.getClass() + ": " + inPostChange.getCode() + "\n";
+                    data = data + "InPost: " + inPostChange.getCode() + "\n";
                 for (PocztaPolska pocztaPolskaChange : pocztaPolskaChanges)
-                    data = data + pocztaPolskaChanges.getClass() + ": " + pocztaPolskaChange.getCode() + "\n";
+                    data = data + "Poczta Polska: " + pocztaPolskaChange.getCode() + "\n";
                 for (UPS upsListChange : upsListChanges)
-                    data = data + upsListChange.getClass() + ": " + upsListChange.getCode() + "\n";
+                    data = data + "UPS: " + upsListChange.getCode() + "\n";
                 for (Fedex fedexListChange : fedexListChanges)
-                    data = data + fedexListChanges.getClass() + ": " + fedexListChange.getCode() + "\n";
+                    data = data + "Fedex: " + fedexListChange.getCode() + "\n";
                 for (DHL dhlChange : dhlChanges)
-                    data = data + dhlChanges.getClass() + ": " + dhlChange.getCode() + "\n";
+                    data = data + "DHL: " + dhlChange.getCode() + "\n";
 
                 email.sendSimpleMessage(user.getEmail(), "<NoReply> Your packages changed their statuses!",
                         "Some of your packages changed their statuses. Codes:\n" +
                                 data +
-                                " Please, login and check it out.");
+                                "Please, login and check it out.");
             }
         }
     }
