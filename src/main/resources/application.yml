@@ -3,13 +3,13 @@ security:
     token:
       expire-length: 3600000
       auth-login-url: /users/authenticate;
-      jwt-secret: 9287a33a455a429fb737edc53bdac483
+      jwt-secret: xxx
 spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: trackyourpacks@gmail.com
-    password: tracking123!
+    username: xxx
+    password: xxx
     protocol: smtp
     tls: true
     properties.mail.smtp:
